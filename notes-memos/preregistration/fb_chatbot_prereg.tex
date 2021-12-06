@@ -1,0 +1,127 @@
+\documentclass[letterpaper, 12pt, parskip=full,DIV=10]{scrartcl}
+% The next three lines are temporary, for todo notes, remove after notes are removed
+%\documentclass[letterpaper, 12pt, parskip=full,]{scrartcl}
+%\setlength{\marginparwidth}{4.5cm}
+%\usepackage[top=2.5cm, bottom=2.5cm, left=1.5cm, right=5cm]{geometry}
+
+\usepackage{soul} % for highlighting
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\tikzset{%
+  >={Latex[width=2mm,length=2mm]},
+  % Specifications for style of nodes:
+            base/.style = {rectangle, rounded corners, draw=black,
+                           minimum width=4cm, minimum height=1cm,
+                           text centered, font=\sffamily},
+  activityStarts/.style = {base, fill=blue!30},
+       startstop/.style = {base, fill=red!30},
+    activityRuns/.style = {base, fill=green!20},
+         process/.style = {base, minimum width=2.5cm, fill=orange!15},
+                          % font=\ttfamily},
+}
+
+% Title and Subtitle added in .tex file
+
+\title{Testing interventions to address vaccine hesitancy on Facebook in East and West Africa}
+\subtitle{Pre-registration}
+\author{Leah R. Rosenzweig, Molly Offer-Westort}
+\date{\today}
+
+\input{../template_MOW.sty}
+
+\begin{document}%
+\normalsize%
+\maketitle%
+\tableofcontents%
+\clearpage
+
+\section{Motivation and Research Questions}
+
+
+\section{Design}
+
+\subsection{Learning stage:}
+In the learning stage, we will learn which messages are most effective in response to respondent concerns.  Consequently in the learning stage, we assign all respondents to the group 2, condition: Chatbot, conditional vaccine interventions.
+
+We use data only from the first three concerns that respondents report. After we deliver messaging related to the concern, we ask whether the messaging addressed their concern, with the options: yes, not really. Values are assigned as (1, 0) respectively, i.e., the message is a success only if it addresses the question. At the end of the learning stage, we select messaging based on messages with the highest inverse probability weighted average value for each concern category. 
+
+In this stage, we assign treatment using top-two Thompson sampling \cite{russo16a} within each concern category, with a probability floor of 0.1/|category|.
+
+We suppose that $K$ arms have unknown success rates $\theta_1, \dots, \theta_K$, following their respective Bernoulli distributions, with likelihoods
+\[f_{X_1|\Theta_1}(x_1|\theta_1),\dots, f_{X_K|\Theta_K}(x_K|\theta_K).\]
+Posteriors follow Beta distributions with parameters $\alpha_{k,b}, \beta_{k,b}$. 
+
+The design below is parameterized by our priors, set as uniform for all arms, $\alpha_{k} = \beta_{k} =1$; a value $\gamma$ which sets the first batch size for uniform random assignment; and a value $\delta$, which sets the probability floor. 
+
+\begin{algorithm} \footnotesize
+    \caption{Top-two Thompson sampling with probability floors}
+    \label{algg:ttts}
+    \begin{algorithmic}[1] % The number tells where the line numbering should start
+    	\State Set  $\alpha_{k} \leftarrow 1, \ \beta_{k} \leftarrow 1\ \forall k \in \kk$%; \aB \leftarrow \y \leftarrow $ empty vector.  
+	\Comment{Initialize priors}%, assignment vector, and reward vector. }
+    	\For{$i = 1, \dots, N$}
+		\If{$i \leq \gamma$}
+			 \State Set $p_{k} \leftarrow \frac{1 }{|\kk| } \ \ \forall k \in \kk $ \Comment{In first batch, set treatment probabilities as uniform.}
+		\Else 	
+			\For{$k \in \kk$}
+				\State Sample $\hat \theta_k  \sim \textrm{Beta}\left(\alpha_{k}, \beta_{k} \right)$ \Comment{Sample from posteriors. }
+			 \EndFor
+			\State Set $I_1 \leftarrow \underset{k}{\argmax} \hat\theta_k$; set $I_2 \leftarrow \underset{j\neq I_1}{\argmax} \hat\theta_j$. \Comment{Identify top two arms from posterior samples}. 
+			\State Set $p_k \leftarrow \frac{1 }{\delta \times |\kk| } $ for $k \notin \{ I_1, I_2\} $. \Comment{Assign probabilities floors for not top two arms.}
+			\State Set $p_k \leftarrow \frac{1}{2} (1-  \sum\limits_{j \notin \{ I_1, I_2\} } p_j) $ for $k \in \{ I_1, I_2\} $ \Comment{Assign remaining probability equally to top two arms.}
+		\EndIf
+		\State Assign treatment $a_i$ with probabilities $\p = \{ p_k: k \in \kk \} $; observe rewards $y_i$.
+%		\State $\aB \leftarrow [\aB : a_i]$ \Comment{Augment assignment vector.}
+%		\State $\y \leftarrow [\y : y_i]$ \Comment{Augment reward vector vector.}
+		\For{$k \in \kk$} \Comment{Update posterior distribution parameters.}
+			\State $(\alpha_{k}, \beta_{k}) \leftarrow (\alpha_{k} + \mathbbm{1}\{ a_i = k\}\mathbbm{1}\{ y_i = 1\} + 1,  \beta_{k} + \mathbbm{1} \{ a_i = k\}\mathbbm{1}\{ y_i = 0\})$. 
+		\EndFor	
+	\EndFor
+    \end{algorithmic}
+\end{algorithm}
+
+
+%
+%\begin{algorithm} \footnotesize
+%    \caption{Batchwise top-two Thompson sampling with probability floors}
+%    \label{algg:ttts}
+%    \begin{algorithmic}[1] % The number tells where the line numbering should start
+%    	\State Set  $\alpha_{k,1} \leftarrow 1, \ \beta_{k,1} \leftarrow 1 \forall k \in \kk ; \aB \leftarrow \y \leftarrow $ empty vector.  
+%	\Comment{Initialize priors, assignment vector, and reward vector. }
+%    	\For{$i = 1, \dots, N$}
+%		\If{$i \in \mathcal{I}_1$}
+%			 \State Set $p_{k} \leftarrow \frac{1 }{|\kk| } \ \ \forall k \in \kk $ \Comment{In first batch, set treatment probabilities as uniform.}
+%		\ElsIf{$i \in \mathcal{I}_b$ for $b = 2, \dots, B$} 
+%			\If{ $i$ is the first observation in $\mathcal{I}_b$} \Comment{At the start of each batch\dots}
+%				\For{$k \in \kk$} \Comment{\dots update the distributions.}
+%					\State $(\alpha_{k,b}, \beta_{k,b}) \leftarrow (\sum\limits_{i} \mathbbm{1}\{ a_i = k\}\mathbbm{1}\{ y_i = 1\} + 1, \sum\limits_{i}\mathbbm{1} \{ a_i = k\}\mathbbm{1}\{ y_i = 0\})$.
+%				\EndFor
+%			\EndIf			
+%			\For{$k \in \kk$}
+%				\State Sample $\hat \theta_k  \sim \textrm{Beta}\left(\alpha_{k,b}, \beta_{k,b} \right)$ \Comment{Sample from posteriors. }
+%			 \EndFor
+%			\State Set $I_1 \leftarrow \underset{k}{\argmax} \hat\theta_k$; set $I_2 \leftarrow \underset{j}{\argmax} \hat\theta_j, j\neq I_1$. \Comment{Identify top two arms from posterior samples}. 
+%			\State Set $p_k \leftarrow \frac{1 }{\delta \times |\kk| } $ for $k \notin \{ I_1, I_2\} $. \Comment{Assign probabilities floors for not top two arms.}
+%			\State Set $p_k \leftarrow \frac{1}{2} (1-  \sum\limits_{j \notin \{ I_1, I_2\} } p_j) $ for $k \in \{ I_1, I_2\} $ \Comment{Assign remaining probability to top two arms.}
+%		\EndIf
+%		\State Assign treatment $a_i$ with probabilities $\p = \{ p_k: k \in \kk \} $; observe rewards $y_i$.
+%		\State $\aB \leftarrow [\aB : a_i]$ \Comment{Augment assignment vector.}
+%		\State $\y \leftarrow [\y : y_i]$ \Comment{Augment reward vector vector.}
+%	\EndFor
+%    \end{algorithmic}
+%\end{algorithm}
+
+\subsection{Evaluation stage:}
+In the evaluation stage, we assign treatment to all conditions at random. To respondents assigned to group 2, Chatbot, conditional vaccine interventions, we will only deliver the messaging selected for respective concerns during the learning stage. 
+
+
+
+\section{Analysis}
+
+\clearpage
+\bibliography{../fb_chatbot.bib}
+
+\clearpage
+\appendix
+
+\end{document}
