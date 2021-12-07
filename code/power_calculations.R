@@ -12,20 +12,19 @@ hj_f <- function(y,probs){
 
 set.seed(60637)
 
-# Suppose there are four arms, and we're running an experiment with up to 1000 
+# Suppose there are three arms, and we're running an experiment with up to 1000 
 # observations. We'll look at how this experiment plays out across 1000 
 # repetitions.
-n_arms <- 4
+n_arms <- 3
 n_exp <- 1000
 n_reps <- 1000
 
 # True data is drawn from Binomial distributions. 
 ## arm 1: Binom(0.49)
-## arm 2: Binom(0.49)
-## arm 3: Binom(0.5), 
-## arm 4: Binom(0.55)
+## arm 2: Binom(0.5), 
+## arm 3: Binom(0.55)
 
-dgp <- c(mean = c(0.49, 0.49, 0.5, 0.55))
+dgp <- c(mean = c(0.49, 0.5, 0.55))
 
 # - Initialize priors.
 alpha <- beta <- 1
@@ -106,13 +105,22 @@ pw_mat <- do.call('cbind', lapply(1:n_reps,
                                   } ))
 
 
+# sample mean, cumulative estimates
+sm_cum <- apply(y_arr, c(2,3), function(x) {
+  (cumsum(ifelse(is.na(x), 0, x)))/cumsum(!is.na(x))
+})
+
+# across simulation, how often do we get it correct?
+sm_correct <- rowMeans(apply(sm_cum, c(1,2), function(x) which.max(x)==which.max(dgp)))
+
+
 # ht, cumulative estimates
 ht_cum <- apply(y_arr/probs_arr, c(2,3), function(x) {
   cumsum(ifelse(is.na(x), 0, x))/seq_along(x)
 })
 
 # across simulation, how often do we get it correct?
-ht_correct <- rowMeans(apply(ht_cum, c(1,2), function(x) which.max(x)==4))
+ht_correct <- rowMeans(apply(ht_cum, c(1,2), function(x) which.max(x)==which.max(dgp)))
 
 
 # hajek, cumulative estimates
@@ -127,7 +135,7 @@ hj_cum <- sapply(1:n_arms, # applying over repetitions
                  simplify = 'array')
 
 # across simulation, how often do we get it correct?
-hj_correct <- rowMeans(apply(hj_cum, c(1,2), function(x) which.max(x)==4))
+hj_correct <- rowMeans(apply(hj_cum, c(1,2), function(x) which.max(x)==which.max(dgp)))
 
 
 
@@ -149,7 +157,7 @@ cum_assign_long <- do.call(rbind.data.frame, cum_assign_l)
 
 sidx <- which(cum_assign_long$rep %in% sample(1:n_reps, size = min(n_reps, 100)))
 
-ggplot(cum_assign_long[sidx,], aes(x = n, y = arm, color = as.factor(p), stroke = as.factor(rep))) +
+gg1 <- ggplot(cum_assign_long[sidx,], aes(x = n, y = arm, color = as.factor(p), stroke = as.factor(rep))) +
   facet_grid(cols = vars(as.factor(p))) +
   geom_line(alpha = 0.2) +
   theme_bw() +
@@ -158,20 +166,30 @@ ggplot(cum_assign_long[sidx,], aes(x = n, y = arm, color = as.factor(p), stroke 
        x = 'Time', y = 'Cumulative Assignment', 
        color = 'Success\nProbability') +
   scale_colour_viridis_d(labels = as.character(dgp)) + 
-  guides(colour = guide_legend(override.aes = list(alpha = 1))) + 
-  ggsave('../tables-figures/tt_cumulative.png', width = 8, height = 4)
+  guides(colour = guide_legend(override.aes = list(alpha = 1)))
 
-cmat <- data.frame(n = rep(1:n_exp, 2), correct_pct = c(ht_correct, hj_correct), 
-                   estimator = rep(c('Horvitz-Thompson', 'Hajek'), each = n_exp))
+ggsave(file = '../tables-figures/tt_cumulative', 
+       plot = gg1, 
+       device = 'png',
+       width = 8, height = 4)
 
-ggplot(cmat, aes(x = n, y = correct_pct, color = as.factor(estimator))) +
+cmat <- data.frame(n = rep(1:n_exp, 3), correct_pct = c(sm_correct, ht_correct, hj_correct), 
+                   estimator = rep(c('Sample mean', 'Horvitz-Thompson', 'Hajek'), each = n_exp))
+
+
+gg2 <- ggplot(cmat, aes(x = n, y = correct_pct, color = as.factor(estimator))) +
   geom_line() +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
   labs(title = 'Top-two Thompson, best arm selection', x = 'Time', 
        y = 'Proportion Correct', 
        color = 'IPW Estimator') +
-  scale_colour_viridis_d() + 
-  ggsave('../tables-figures/tt_correct.png', width = 8, height = 4)
+  scale_colour_viridis_d() +
+  coord_cartesian(ylim = c(0,1))
+
+ggsave(file = '../tables-figures/tt_correct', 
+       plot = gg2, 
+       device = 'png',
+       width = 8, height = 4)
 
 write.csv(cmat, file = '../tables-figures/best_arm_sims.csv')
