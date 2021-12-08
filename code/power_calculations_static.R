@@ -59,7 +59,7 @@ for(rep in 1:n_reps){
     if(i %in% seq(0, n_exp, 100))
       cat(i,'...')
     
-    if(i <= 100){ # assign treatment to first 100 observations uniformly, for a more stable algorithm
+    if(i <= 1000){ # assign treatment to first 100 observations uniformly, for a more stable algorithm
       
       probs_arr[i,rep,] <- mu_prob <- rep(1/n_arms, n_arms)
       
@@ -160,10 +160,10 @@ hj_correct <- rowMeans(apply(hj_cum, c(1,2), function(x) which.max(x)==which.max
 
 # bias
 hj_cumb <- apply(hj_cum - array(rep(dgp, each = n_exp*n_reps),
-  dim = c(n_exp, n_reps, n_arms), 
-  dimnames = list(paste0('obs_', 1:n_exp), 
-                  paste0('rep_', 1:n_reps),
-                  paste0('arm_', 1:n_arms))), c(1,3), mean, na.rm = TRUE)
+                                dim = c(n_exp, n_reps, n_arms), 
+                                dimnames = list(paste0('obs_', 1:n_exp), 
+                                                paste0('rep_', 1:n_reps),
+                                                paste0('arm_', 1:n_arms))), c(1,3), mean, na.rm = TRUE)
 
 # Plots ----
 # Plot mapping cumulative assignment
@@ -195,7 +195,7 @@ gg1 <- ggplot(cum_assign_long[sidx,], aes(x = n, y = arm, color = as.factor(p), 
   scale_colour_viridis_d(labels = as.character(dgp)) + 
   guides(colour = guide_legend(override.aes = list(alpha = 1)))
 
-ggsave(file = '../tables-figures/tt_cumulative.png', 
+ggsave(file = '../tables-figures/static_cumulative.png', 
        plot = gg1, 
        device = 'png',
        width = 8, height = 4)
@@ -216,7 +216,7 @@ gg2 <- ggplot(cmat, aes(x = n, y = correct_pct, color = as.factor(estimator))) +
   scale_colour_viridis_d() +
   coord_cartesian(ylim = c(0,1))
 
-ggsave(file = '../tables-figures/tt_correct.png', 
+ggsave(file = '../tables-figures/static_correct.png', 
        plot = gg2, 
        device = 'png',
        width = 8, height = 4)
@@ -225,8 +225,8 @@ ggsave(file = '../tables-figures/tt_correct.png',
 # Bias plot
 bias_l <- lapply(list(sm_cumb, ht_cumb, hj_cumb), function(x) {
   bdf <- reshape(as.data.frame(x), 
-          varying = list(1:n_arms), 
-          direction = 'long', timevar = 'p', idvar = 'n', sep = '_', v.names = 'bias')
+                 varying = list(1:n_arms), 
+                 direction = 'long', timevar = 'p', idvar = 'n', sep = '_', v.names = 'bias')
 })
 
 bias_long <- cbind(estimator = rep(c('Sample mean', 'Horvitz-Thompson', 'Hajek'), each = 3*n_exp), do.call(rbind.data.frame, bias_l))
@@ -246,9 +246,9 @@ gg3 <- ggplot(bias_long, aes(x = n, y = bias, color = estimator)) +
        color = 'Estimator') +
   scale_colour_viridis_d()
 
-ggsave(file = '../tables-figures/tt_bias.png', 
+ggsave(file = '../tables-figures/static_bias.png', 
        plot = gg3, 
        device = 'png',
        width = 6, height = 4)
 
-write.csv(cmat, file = '../tables-figures/best_arm_sims.csv')
+write.csv(cmat, file = '../tables-figures/best_arm_sims_static.csv')
