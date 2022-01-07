@@ -189,7 +189,7 @@ gg1 <- ggplot(cum_assign_long[sidx,], aes(x = n, y = arm, color = as.factor(p), 
   geom_line(alpha = 0.2) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
-  labs(title = 'Top-two Thompson, arm assignment across repetitions', 
+  labs(title = 'Static, arm assignment across repetitions', 
        x = 'Time', y = 'Cumulative Assignment', 
        color = 'Success\nProbability') +
   scale_colour_viridis_d(labels = as.character(dgp)) + 
@@ -210,7 +210,7 @@ gg2 <- ggplot(cmat, aes(x = n, y = correct_pct, color = as.factor(estimator))) +
   geom_line() +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
-  labs(title = 'Top-two Thompson, best arm selection', x = 'Time', 
+  labs(title = 'Static, best arm selection', x = 'Time', 
        y = 'Proportion Correct', 
        color = 'Estimator') +
   scale_colour_viridis_d() +
@@ -241,7 +241,7 @@ gg3 <- ggplot(bias_long, aes(x = n, y = bias, color = estimator)) +
   theme_bw() + 
   coord_cartesian(ylim = c(-1,1)*0.025) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
-  labs(title = 'Top-two Thompson, bias', x = 'Time', 
+  labs(title = 'Static, bias', x = 'Time', 
        y = 'Bias', 
        color = 'Estimator') +
   scale_colour_viridis_d()
