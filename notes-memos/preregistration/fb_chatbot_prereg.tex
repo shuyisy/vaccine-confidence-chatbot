@@ -8,13 +8,16 @@
 
 \title{Testing interventions to address vaccine hesitancy on Facebook in East and West Africa}
 \subtitle{Pre-registration}
-\author{Leah R. Rosenzweig, Molly Offer-Westort}
+\author{Leah R. Rosenzweig, Molly Offer-Westort \thanks{Authors' names are listed in randomized order using a script that set the zip code of Pick Hall at the University of Chicago as the seed. } }%
+
 \date{\today}
 
-\input{../template_MOW.sty}
+\usepackage{../template_MOW}
+
+
 
 \begin{document}%
-\normalsize%
+
 \maketitle%
 
 \begin{abstract}
@@ -31,9 +34,10 @@ During mass vaccination campaigns, social media platforms can facilitate broader
 
 \section{Motivation and research questions}
 Social media is often associated with the spread of harmful misinformation. During the ongoing COVID-19 pandemic, the spread of vaccine misinformation is particularly problematic because it can contribute to vaccine hesitancy, jeopardizing the ability to achieve herd immunity and save lives once the vaccine becomes widely available in these areas. Cross-national evidence suggests that susceptibility to COVID-19 misinformation is negatively associated with self-reported willingness to get vaccinated against the virus \citep{roozenbeek2020susceptibility}. This project asks whether the tools of social media can be effective to combat the spread of harmful misinformation, promote the sharing of true COVID-19 vaccine information and contribute to greater willingness to get vaccinated against COVID-19. 
+
 In a recent study in Kenya, 60\% of respondents reported being hesitant to receive the COVID-19 vaccine \citep{orangi2021assessing}. Concern over side effects was identified as a potential driver of hesitancy, possibly due to widespread misinformation. However, more research is required to understand how misinformation influences behavior. Our chatbot intervention uses pre-programmed responses to provide an interactive ``conversation'' that first elicits concerns and questions about the COVID-19 vaccine and then assigns messaging treatments to address that specific concern. We evaluate whether this type of intervention outperforms a generic (PSA-style) treatment, similar to the type of messaging many governments across the globe are using and a control (no treatment/information) condition.
-We use Facebook advertisements to target and recruit social media users 18 years and older living in Kenya and Nigeria--two English-language media hubs and major producers and consumers of online information in East and West Africa. Using an adaptive experimental design, we efficiently identify the best messaging interventions for increasing vaccine acceptance. Adaptive experiments update how treatment is assigned to subjects dynamically throughout the experiment. As the adaptive algorithm learns from the data which treatments are most effective, those treatments are assigned with higher probability. Treatments that are shown to be ineffective are assigned with lower probability or are dropped from the experiment. 
-In our adaptive experimental design we use a ``top-two'' sampling algorithm that over-assigns samples to both the best and second-best messaging interventions. This allows us to efficiently learn not only the best intervention overall, but also facilitates exploration of heterogeneity across competing messaging conditions. It may not be the case that a single intervention is best for everyone--tailoring to the average misses the most vulnerable. This is of particular relevance with respect to vaccines, where, in sub-Saharan Africa, lower rates of immunization are associated with factors including living in rural areas, lower household income, and larger household size \citep{ameyaw2021decomposing}. 
+
+We use Facebook advertisements to target and recruit social media users 18 years and older living in Kenya and Nigeria--two English-language media hubs and major producers and consumers of online information in East and West Africa. Using an adaptive experimental design, we efficiently identify the best messaging interventions for increasing vaccine acceptance. Adaptive experiments update how treatment is assigned to subjects dynamically throughout the experiment. As the adaptive algorithm learns from the data which treatments are most effective, those treatments are assigned with higher probability. Treatments that are shown to be ineffective are assigned with lower probability or are dropped from the experiment. In our adaptive experimental design we use a ``top-two'' sampling algorithm that over-assigns samples to both the best and second-best messaging interventions. %This allows us to efficiently learn not only the best intervention overall, but also facilitates exploration of heterogeneity across competing messaging conditions. It may not be the case that a single intervention is best for everyone--tailoring to the average misses the most vulnerable. This is of particular relevance with respect to vaccines, where, in sub-Saharan Africa, lower rates of immunization are associated with factors including living in rural areas, lower household income, and larger household size \citep{ameyaw2021decomposing}. 
 
 This work advances research and policy on combating health misinformation in several important ways. First, we bring comparative data to a global problem. Despite the global nature of the COVID-19 ``infodemic'', most of the existing relevant quantitative and experimental research has been focused on the Global North, particularly the United States. By focusing specifically on social media users in Kenya and Nigeria, we evaluate interventions in a context where the user-base is rapidly growing with the expansion of cell phone and internet access. Second, using an adaptive experimental design, we are able to quickly discard ineffective interventions and focus on those that are most effective. Finally, we learn not just what works best overall, but what works for the subgroups that are most vulnerable to misinformation, and those with constrained access to health services. Analyzing heterogeneity is particularly important with respect to vaccine hesitancy, where different people may have different fears and concerns regarding vaccine development and risks associated with vaccines. 
 
@@ -63,7 +67,7 @@ In Nigeria, all participants were recruited from Local Government Areas (LGAs) i
 
 Below are a few key takeaways from the FGDs:
 \begin{enumerate}
-\item Knowledge and awareness about COVID is relatively high
+\item Knowledge and awareness about COVID is relatively high.
 \item Rumors and conspiracy theories abound (though not all are believed) and are circulated through online sources, particularly social media (Facebook and WhatsApp). People have a hard time sorting fact from fiction. 
 \item A few pieces of misinformation about the COVID-19 vaccine include: that it includes a microchip used to track people; that side effects include paralysis and infertility; and that the vaccine causes people to turn into zombies and/or die three years later.
 \item Trust in government is low, particularly so in Nigeria compared to Kenya. Skepticism about government incentives and actions around the pandemic result in low confidence in the government's ability to carry out vaccination campaigns.
@@ -94,7 +98,7 @@ Below are a few key takeaways from the FGDs:
 
 
 \subsubsection{Facebook pretest}
-We collected data from a short, open-response survey on Facebook among respondents in Kenya and Nigeria. Only 320 respondents answered our short pretest survey, 89\% of whom live in Nigeria. 51\% of respondents reported they were not yet vaccinated against COVID-19. Of the respondents who reported being vaccinated, 60\% reported that they did not experience any side effects after getting the vaccine.
+We collected data from a short, open-response survey on Facebook among respondents in Kenya and Nigeria. 320 respondents answered our short pretest survey, 89\% of whom live in Nigeria. 51\% of respondents reported they were not yet vaccinated against COVID-19. Of the respondents who reported being vaccinated, 60\% reported that they did not experience any side effects after getting the vaccine.
 
 When we asked respondents who said they had gotten the vaccine why they chose to do so, several said it was because they wanted to protect themselves against COVID-19. A few indicated social reasons--either because they wanted to show/influence others, or because others had influenced them.
 
@@ -127,20 +131,20 @@ The quantitative portion of the study occurs following the below stages:
 
 When respondents click to start a message on the advertisement, a Facebook Messenger conversation is started with our chatbot. All respondents, regardless of later treatment assignment, interact with the chatbot to take a survey. The initial conversation with the chatbot collects information on whether respondents have been vaccinated and tests whether respondents can view images on their Messenger app and are able to pass an attention check. 
 
-\item \textbf{Select respondents.} We are interested in moving respondents who have not yet been vaccinated. Consequently, we then condition for continued engagement based on survey pre-screening responses: we continue with respondents who are vaccine ``unsure'' and report that they have not yet received any doses of a COVID-19 vaccine; we also ensure that respondents have passed pre-test checks including the ability to view images and are attentive. 
+\item \textbf{Select respondents.} We are interested in moving respondents who have not yet been vaccinated. Consequently, we then condition for continued engagement based on survey pre-screening responses: we continue with respondents who are vaccine ``unsure'' and report that they have not yet received any doses of a COVID-19 vaccine; we also ensure that respondents have passed pre-test checks. 
 
-\item \textbf{Invitation to participate.} 24 hours after pre-screening, we invite eligible respondents to participate in the survey. After completing the full survey they receive \$0.75 in mobile airtime. The 24 hour delay introduces a time buffer allowing us to further screen for any repeat survey takers who have created fake Facebook accounts. Based on prior experience with these surveys the hope is also to deter serial survey takers from repeatedly taking the survey since they may not know what qualifies for the invitation to participate in the full survey and because they need to wait in order to access. 
+\item \textbf{Invitation to participate.} 24 hours after pre-screening, we invite eligible respondents to participate in the survey. After completing the full survey they receive the equivalent of USD 0.75 in mobile airtime. The 24 hour delay introduces a time buffer allowing us to further screen for any repeat survey takers who have created fake Facebook accounts. Based on prior experience with these surveys the hope is also to deter serial survey takers from repeatedly taking the survey since they may not know what qualifies for the invitation to participate in the full survey and because they need to wait in order to access. 
 
 \item \textbf{Main survey.} We collect survey responses and deliver treatment using the chatbot. 
 
-\item \textbf{Follow-up survey.} Three weeks after the survey, we use sponsored messaging advertisements to offer incentives of the equivalent of \$0.25 in mobile airtime to participate in a short follow-up survey. The purpose of the follow-up survey is to measure effects on self-reported vaccination, providing respondents sufficient time after the delivery of the intervention to get vaccinated, if they wished.
+\item \textbf{Follow-up survey.} Three weeks after the survey, we use sponsored messaging advertisements to offer incentives of the equivalent of USD 0.25 in mobile airtime to participate in a short follow-up survey. The purpose of the follow-up survey is to measure effects on self-reported vaccination, providing respondents sufficient time after the delivery of the intervention to get vaccinated, if they wished.
 
 \end{enumerate}
 
 \begin{figure}[h!]
    \centering
    \includegraphics[width = 0.9\textwidth]{../../tables-figures/vcf_survey_flow.jpg} 
-   \caption{Survey flow}
+   \caption{Survey flow diagram.}
    \label{fig:surveyflow}
 \end{figure}
 
@@ -156,7 +160,7 @@ Respondents will be asked the following question with 8 possible answer options:
 \begin{tabular}{p{.3\textwidth}  l}
   & \multicolumn{1}{c}{ \textit{Order randomized at the respondent level} } \\
   \raggedright
-What would you say is the \textbf{main} reason you are hesitant to get the COVID-19 vaccine? & 
+What would you say is your main question or concern about the COVID-19 vaccine? & 
 \begin{tabular}{p{.6\textwidth}} 
 \hline
 \begin{enumerate}[itemsep = -0.9ex, topsep = 0ex, partopsep=0ex, parsep=1ex, leftmargin=2ex, labelindent=\parindent]
@@ -262,31 +266,34 @@ Table \ref{tab:mapping} illustrates how the messages map onto the different main
    \label{tab:mapping}
 \end{table}
 
-After respondents report their primary concern, we deliver messaging targeted to that concern. In the learning phase treatment is assigned randomly within the set of treatments targeting that particular concern, as outlined in Table 1. In the evaluation phase, the top performing treatment(s) in each category will be assigned for each concern. (See Section ~\ref{message} for further discussion.)
+After respondents report their primary concern, we deliver messaging targeted to that concern. In the learning phase messaging is assigned randomly within the set of messages targeting that particular concern, as outlined in Table~\ref{tab:mapping}. In the evaluation phase, the top performing message(s) in each category will be assigned for each concern. (See Section ~\ref{message} for further discussion of messaging selection.)
+
+\clearpage
+The content of the messages is as follows:
 
 \begin{enumerate}
   \item \textbf{Vaccine side effects (mild)} emphasizes that most side effects are mild, short-lived, and some people experience no side effects to the vaccine. 
   \item \textbf{Vaccine side effects (debunk)} corrects common misperceptions about COVID-19 vaccine side effects, particularly that the vaccine does not make you magnetic and that it is safe (and encouraged) for pregnant women. We also share a link debunking other common rumors from AfricaCheck.org.
   \item \textbf{Vaccine development/approvals} describes how the road to develop the COVID-19 vaccine had several checkpoints where experts (both national and international bodies) verified the safety of the vaccine, and provides links to short videos from the AfricaCheck.org on how vaccines are vetted and how COVID-19 vaccines were created so quickly. 
   \item \textbf{Vaccine safety/effectiveness} describes what it means when people say vaccines are safe and effective and presents information from the WHO related to COVID-19 vaccine safety.
-  \item \textbf{Benefits} makes salient the myriad benefits to vaccination, particularly focusing on ``getting back to normal life'' since many faced economic hardships from lockdowns and the impacts of the global pandemic this treatment appeals to those interests and emotions and suggests vaccination may be the fastest way back to normal. We also randomize within this treatment to test whether priming respondents that government services may be contingent upon being vaccinated against COVID-19 in the future.
+  \item \textbf{Benefits} makes salient the myriad benefits to vaccination, particularly focusing on ``getting back to normal life'' since many faced economic hardships from lockdowns and the impacts of the global pandemic this message appeals to those interests and emotions and suggests vaccination may be the fastest way back to normal. We also randomize within this message to test whether priming respondents that government services may be contingent upon being vaccinated against COVID-19 in the future.
   \item \textbf{Risks} describes the risks associated with COVID-19 and how the likelihood of severe illness and death from the virus is much lower among vaccinated individuals.
   \item \textbf{How vaccines work} provides a \href{https://www.facebook.com/dataforsociety/videos/4265014093602814}{link} to a video explaining how the COVID-19 vaccine helps to prevent the disease in the body. 
   \item \textbf{Social considerations} informs respondents that a vaccine not only protects an individual, but also others around them, and includes a video explaining herd immunity. It asks respondents to not only consider themselves but also others who might be vulnerable to the virus but who cannot receive themselves and would benefit from as many people as possible getting vaccinated.
   \item \textbf{Elite cues posts} presents images and videos from different types of elites getting the COVID-19 vaccine themselves and endorsing it. 
-  \begin{enumerate}
+  \begin{enumerate}[noitemsep, topsep=0pt]
     \item \textbf{Political figures}: photo of the president of the country receiving the COVID-19 vaccine
     \item \textbf{International experts}: photo of Dr. Tedros Adhanom Ghebreyesus, Director General of the World Health Organization (WHO) receiving his COVID-19 vaccine.
     \item \textbf{Religious figures}: muslim and christian leaders endorsing COVID-19 vaccination.
     \item \textbf{Healthcare workers}: videos of healthcare workers in each country endorsing vaccination.
   \end{enumerate}
   \item \textbf{Misinformation}
-    \begin{enumerate}
+    \begin{enumerate}[noitemsep, topsep=0pt]
     \item \textbf{Facebook tips} presents 5 tips Facebook suggests to help spot misinformation (generally).
     \item \textbf{AfricaCheck video} presents 5 general tips to help spot misinformation, generally. And also presents a video for suggestions on how to identify COVID-19 misinformation.
     \item \textbf{Pledge} adapted from \cite{offer-westort2021optimal}. it asks people to take a pledge (and post to their timeline if they choose to) to spot and speak out about misinformation to help keep friends and family safe from COVID-19 misinformation.
     \item \textbf{Accuracy} prime is based on an accuracy nudge that has been proven effective in this and other contexts \citep{pennycook2020fighting, offer-westort2021optimal}, but rather than asking people to think about whether an actual post (stimuli) is true or not, we prime respondents to think about accuracy, generally, when they're scrolling through social media.
-    \item \textbf{7 types of misinformation} teaches respondents the different types of misinformation they may encounter (e.g, misleading content, fake experts, satire, etc.) as categorized by \href{First Draft}{https://firstdraftnews.org/}, and then asks respondents to take a quiz and test whether they can correctly identify the type of misinformation on a false COVID-19 vaccine post. 
+    \item \textbf{7 types of misinformation} teaches respondents the different types of misinformation they may encounter (e.g, misleading content, fake experts, satire, etc.) as categorized by \href{https://firstdraftnews.org/}{First Draft}, and then asks respondents to take a quiz and test whether they can correctly identify the type of misinformation on a false COVID-19 vaccine post. 
   \end{enumerate}
   \item {Public service messaging} delivers a generic message encouraging vaccine uptake. 
   \begin{figure}[h!]
@@ -307,14 +314,14 @@ We ask the following questions as measures of vaccine acceptance and intention t
 
 \begin{itemize}
 \item ``How much do you want to get a COVID-19 vaccine?''
-\begin{itemize}
+\begin{itemize}[noitemsep, topsep=0pt]
 \item Not at all (1)
 \item A little (2)
 \item Moderately (3)
  \item Very much (4)
 \end{itemize}
 \item ``If a COVID-19 vaccine were offered to you today (free of charge), would you choose to get vaccinated?''
-\begin{itemize}
+\begin{itemize}[noitemsep, topsep=0pt]
 \item No, definitely not (1) 
 \item No, probably not (2)
 \item Yes, probably (3)
@@ -327,11 +334,11 @@ We standardize responses for each question separately and then add individual sc
 \paragraph{Secondary outcome}
 \begin{itemize}
 \item \textbf{Sharing.} Following the primary outcome measurement, we also measure respondent sharing intentions with respect to both false and true social media posts about COVID-19 vaccines. After we show respondents each post, we ask them 
-\begin{itemize}
+\begin{itemize}[noitemsep, topsep=0pt]
   \item ``Would you like to share this post on your timeline?''
   \item ``Would you like to send this post to a friend on Messenger?''
 \end{itemize}
-We report results with respect to sharing intentions for true and false posts separately. We expect that the extent to which sharing behavior is moved by treatment will be a consequence of the proportion of respondents who report uncertainty over information (concern seven) as their primary concern. 
+We report results with respect to sharing intentions for true and false posts separately. We expect that the extent to which sharing behavior is moved by messaging will be a consequence of the proportion of respondents who report uncertainty over information (concern seven) as their primary concern. 
 \item \textbf{Information seeking.} As an interim behavioral measure we are also interested in whether respondents click on links advertising more information about the COVID-19 vaccine and, when available, links to registration sites to sign up for an appointment. The outcome variable is a binary variable for whether respondents clicked the link. 
 \item \textbf{Encouraging others.} We also measure whether respondents share to their Facebook timeline a pro-vaccine post that we provide them with. The outcome variable is a binary variable for whether respondents clicked the link to share the post. 
 \item \textbf{Vaccination status.} In the follow-up survey, we measure whether respondents have reported that they have received at least one dose of the vaccine. The outcome variable is a binary variable for whether respondents report that they have received at least one dose of the vaccine. 
@@ -341,14 +348,14 @@ We report results with respect to sharing intentions for true and false posts se
 
 \subsection{Learning phase}
 
-The first 2,000 respondents in each country participate in the learning phase. In the learning phase, we will learn which messages are most effective in response to respondent concerns.  For example, respondents who articulate that they don't need the vaccine because they are protected by God (concern four) will be assigned the \textit{benefits}, \emph{social considerations}, or \emph{elite cues (religious leaders)} treatment. During the learning phase we learn which of these three treatments is most effective for respondents who share this main concern. For this reason, in the learning phase, we assign all respondents to the group 2, condition: Chatbot, conditional vaccine interventions. 
+The first 2,000 respondents in each country participate in the learning phase. In the learning phase, we will learn which messages are most effective in response to respondent concerns.  For example, respondents who articulate that they don't need the vaccine because they are protected by God (concern four) will be assigned the \textit{benefits}, \emph{social considerations}, or \emph{elite cues (religious leaders)} message. During the learning phase we learn which of these three messages is most effective for respondents who share this main concern. For this reason, in the learning phase, we assign all respondents to the group 2, condition: Chatbot, conditional vaccine interventions. 
 
-We use data only from the first three concerns that respondents report.\footnote{We allow respondents to potentially receive the same treatment multiple times based on the concerns they articulate and the randomly assigned treatment.} We allow respondents to engage with the chatbot and submit multiple concerns, as there may be multiple topics contributing to individual vaccination decisions, and we believe that we can learn from individuals about messaging across these topics. However, as respondents engage with the chatbot for longer, the effects of individual messaging may diminish relative to the cumulative effects of past messages. 
+We use data only from the first three concerns that respondents report.\footnote{We allow respondents to potentially receive the same message multiple times based on the concerns they articulate and the randomly assigned messaging.} We allow respondents to engage with the chatbot and submit multiple concerns, as there may be multiple topics contributing to individual vaccination decisions, and we believe that we can learn from individuals about messaging across these topics. However, as respondents engage with the chatbot for longer, the effects of individual messaging may diminish relative to the cumulative effects of past messages. 
 
 After we deliver messaging related to the concern, we ask whether the messaging addressed their concern. A message is coded as a success only if the respondent responds affirmatively to this question. We use this direct measure of message efficacy rather than the eventual outcome of vaccine acceptance intentions, to get a less noisy measure to input into our adaptive algorithm. This also allows us to collect multiple measures per individual. 
 
-\subsubsection{Adaptive Algorithms}
-We use a data-driven approach to learning, using an adaptive algorithm. We use a top-two Thompson sampling algorithm \citep{russo16a}, which assigns treatment with equal probability to the two treatment arms with the highest sampled posterior values. Our adaptive algorithm operates separately for each concern category. Within each category, we have several candidate messages that are selected among. Information about message efficacy is not shared across concern categories.  
+\subsubsection{Adaptive algorithms}
+We use a data-driven approach to learning, using an adaptive algorithm. We use a top-two Thompson sampling algorithm \citep{russo16a}, which assigns treatment with equal probability to the two treatment arms with the highest sampled posterior values. Our adaptive algorithm operates separately for each concern category, where ``treatments'' are the associated messages listed in Table~\ref{tab:mapping}. While the same message may be used in response to multiple concern categories, information about message efficacy is not shared across concern categories.  
 
 For the first batch of 100 observations in each concern category, we assign treatment uniformly at random, to decrease algorithm instability from random noise early on in data collection; this batch is parameterized by gamma in the algorithm below. We also augment the top-two Thompson sampling algorithm to include probability floors, so that all arms are sampled with some minimal probability for every observation. In the description of the algorithm below, floors are set by the $\delta$ parameter; we set $\delta$ = 0.1, so that in each category, arms are sampled with a probability floor of $0.1 \times$ number of treatment arms in the concern category. So, for example, if there are three treatment messages that could be sent for a given concern, the floor is $0.1\times0.33 = 0.033$ for any given arm. After imposing floors, the remaining assignment probability is equally divided between the top two arms. The top two arms would be assigned treatment with probability 0.467, and the remaining arm is assigned treatment with probability 0.033.
 
@@ -381,7 +388,7 @@ The design below is parameterized by our priors, set as uniform for all arms, $\
 				\State Sample $\hat \theta_k  \sim \textrm{Beta}\left(\alpha_{k}, \beta_{k} \right)$ \Comment{Sample from posteriors. }
 			 \EndFor
 			\State Set $I_1 \leftarrow \underset{k}{\argmax} \hat\theta_k$; set $I_2 \leftarrow \underset{j\neq I_1}{\argmax} \hat\theta_j$. \Comment{Identify top two arms from posterior samples}. 
-			\State Set $p_k \leftarrow \frac{1 }{\delta \times |\kk| } $ for $k \notin \{ I_1, I_2\} $. \Comment{Assign probabilities floors for not top two arms.}
+			\State Set $p_k \leftarrow {\delta \times |\kk| } $ for $k \notin \{ I_1, I_2\} $. \Comment{Assign probabilities floors for not top two arms.}
 			\State Set $p_k \leftarrow \frac{1}{2} (1-  \sum\limits_{j \notin \{ I_1, I_2\} } p_j) $ for $k \in \{ I_1, I_2\} $ \Comment{Assign remaining probability equally to top two arms.}
 		\EndIf
 		\State Assign treatment $a_i$ with probabilities $\p = \{ p_k: k \in \kk \} $; observe rewards $y_i$.
@@ -396,8 +403,8 @@ The design below is parameterized by our priors, set as uniform for all arms, $\
 
 \begin{figure}[htbp]
    \centering
-   \includegraphics[width = 0.95\textwidth]{../../tables-figures/tt_cumulative.png}
-   \caption{Top-two Thompson sampling, arm assignment across repetitions. Using three arms and success probabilities 0.49, 0.5, and 0.55, this figure shows cumulative assignment to each arm over repeated simulated experiments. }
+   \includegraphics[width = 0.95\textwidth]{../../tables-figures/tt_cumulative4.png}
+   \caption{Top-two Thompson sampling, arm assignment across repetitions. Using four arms and success probabilities 0.49, 0.49, 0.5, and 0.55, this figure shows cumulative assignment to each arm over repeated simulated experiments. }
    \label{fig:ttt_cumulative}
 \end{figure}
 
@@ -406,16 +413,38 @@ The design below is parameterized by our priors, set as uniform for all arms, $\
 
 At the end of the learning phase, we will determine which messaging treatments are most effective for each concern category using stabilized inverse probability weighted estimates of mean response rates. 
 
-Figure~\ref{fig:ttt_best} shows the rate at which we select the best arm in a simulated experimental condition. With 2,000 observations per country, assuming each respondent reports 1.5 concerns, we will have on average 750 observations for each adaptive algorithm; our simulation shows that we will select the best arm 80\% of the time in this setting, when the best arm improves over the second best arm by 0.05 percentage points.
+Figure~\ref{fig:ttt_best} shows the rate at which we select the best arm in a simulated experimental condition. With 2,000 observations per country, assuming each respondent reports 1.5 concerns, we will have on average 850 observations for each adaptive algorithm; our simulation shows that we will select the best arm 76\% of the time in this setting using the sample mean or stabilized inverse probability weights, when the best arm improves over the second best arm by 0.05 percentage points. We will select one of the two best arms 89\% of the time. 
+
 
 \begin{figure}[htbp]
    \centering
-   \includegraphics[width = 0.95\textwidth]{../../tables-figures/tt_correct.png}
-   \caption{Top-two Thompson sampling, arm assignment across repetitions. Using three arms and success probabilities 0.49, 0.5, and 0.55, this figure represents the proportion of the time the correct arm is selected across 1,000 simulated experiments}
+   \begin{subfigure}{\textwidth}
+  \centering
+  \caption{Top arm selected}
+  \includegraphics[width = \textwidth]{../../tables-figures/tt_correct4.png} 
+  \label{fig:tt_best1}
+\end{subfigure}
+\begin{subfigure}{\textwidth}
+  \centering
+  \caption{One of top two arms selected}
+  \includegraphics[width = \textwidth]{../../tables-figures/tt_correct-top-two4.png} 
+  \label{fig:tt_best2}
+\end{subfigure}
+   \caption{Top-two Thompson sampling, best arm selection across repetitions. Using four arms and success probabilities 0.49, 0.49, 0.5, and 0.55, this figure represents the proportion of the times the true best arm (panel a), or one of the top two arms (panel b) is selected across 1,000 simulated experiments, using different estimators for arm selection.}
    \label{fig:ttt_best}
 \end{figure}
 
-We will validate the message efficacy measure against vaccine intentions, checking that there is positive correlation. When the estimated response of the second best message is within 0.1 standard deviations of the best message, we will randomize across the best two messages. We will assign only these selected messages to respondents in conversation with the concern-responding chatbot based on the respondent-provided concern category. 
+We use stabilized inverse probability weights because they perform approximately as well as the sample mean in best arm selection, but they do not have the large bias problems of the sample mean. Estimates under the sample mean using adaptively collected data are systematically biased \citep{nie2017adaptively}.  Figure~\ref{fig:ttt_bias} shows the bias of each estimator for each arm in our simulated setting; as more data is collected for the best arm, bias is reduced, but for under-performing arms without sufficient probability floors, bias may persist asymptotically. We address this bias by using inverse probability weighted estimators. The Horvitz-Thompson estimator is finite-sample unbiased (see \citealt{bowden2017unbiased}; \citealt{offer2021adaptive} also shows a proof of this in Appendix B.2.). The stabilized inverse probability weighted estimator is approximately unbiased and has lower variance than the Horvitz-Thompson estimator--explaining the better performance in best arm selection in Figure~\ref{fig:ttt_best}. 
+
+We will validate the message efficacy measure against vaccine intentions, checking that there is positive correlation. When the estimated response of the second best message is within 0.05 standard deviations of the best message, we will randomize across the best two messages. We will assign only these selected messages to respondents in conversation with the concern-responding chatbot based on the respondent-provided concern category. 
+
+
+\begin{figure}[htbp]
+   \centering
+   \includegraphics[width = 0.95\textwidth]{../../tables-figures/tt_bias4.png}
+   \caption{Top-two Thompson sampling, arm assignment across repetitions. Using four arms and success probabilities 0.49, 0.49, 0.5, and 0.55, this figure shows bias for each arm under different estimators over repeated simulated experiments. }
+   \label{fig:ttt_bias}
+\end{figure}
 
 \subsection{Evaluation phase}
 Following the learning phase, the subsequent 9,000 respondents in each country participate in the evaluation phase. In the evaluation phase, we compare response under the concern-responding chatbot condition to control groups. For group 0, we deliver the survey only. For group 1, we deliver general messaging related to the importance of getting the COVID-19 vaccine when it is made available (see Figure~\ref{fig:psa}). Group 2 receives the concern-responding chatbot condition. 
@@ -426,11 +455,11 @@ With a total of 18,000 respondents in evaluation, divided into three equally siz
 
 
 \section{Analysis}
-Analysis will be conducted only on the responses collected during the evaluation phase. In the group 2: concern-responding chatbot, we will use the revised version of the survey script with deterministic messaging conditional on reported concern. 
+Analysis will be conducted only on the responses collected during the evaluation phase. In the group 2: concern-responding chatbot, we will use the revised version of the survey script with messaging selected during the learning phase, conditional on reported concern. 
 
 We will compare the three groups, and will report differences between group 1 and group 0, group 2 and group 0, and group 2 and group 1. We test these differences as independent hypotheses. 
 
-\textbf{Main effect estimates}
+\subsection{Main effect estimates}
 
 We will report effects for the response variables combined across countries, and separately for each country:
 \begin{itemize}
@@ -478,9 +507,9 @@ From the follow-up survey, we only report analysis on self-reports of whether re
 %    \end{algorithmic}
 %\end{algorithm}
 
-\paragraph{Heterogeneity analysis}
+\subsection{Heterogeneity analysis}
 We will report conditional average treatment effects for respondents based on the below covariates measured prior to delivery of treatment. 
-\begin{itemize}
+\begin{itemize}[noitemsep, topsep=0pt]
 \item Country (Kenya, Nigeria)
 \item Digital literacy (above vs. below median)
 \item Age (above vs. below median)
@@ -509,5 +538,10 @@ This section goes into more detail for some of the design decisions we made as t
 
 \clearpage
 \appendix
+\section{Power calculations for arm selection}
+
+Scripts for power calculations are posted at \url{https://github.com/UChicago-pol-methods/vaccine-confidence-chatbot/blob/main/code/power_calculations.R}
+
+
 
 \end{document}
