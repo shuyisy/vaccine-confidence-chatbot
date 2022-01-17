@@ -96,7 +96,7 @@ results_df <- data.frame(sm = sm_out$x[,'mean'],
 results_df <- results_df[order(hj_out[,'concern'], -hj_out[,'count']),]
 
 
-write.csv(results_df, file = paste0("../data/results_estimates_", Sys.Date(), '.csv'), row.names = FALSE)
+write.csv(results_df, file = paste0("../tables-figures/results_estimates_", Sys.Date(), '.csv'), row.names = FALSE)
 
 
 # Plots ----
