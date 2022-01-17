@@ -17,16 +17,17 @@ set.seed(60637)
 # Suppose there are three arms, and we're running an experiment with up to 1000 
 # observations. We'll look at how this experiment plays out across 1000 
 # repetitions.
-n_arms <- 3
+n_arms <- 4
 n_exp <- 1000
 n_reps <- 1000
 
 # True data is drawn from Binomial distributions. 
 ## arm 1: Binom(0.49)
-## arm 2: Binom(0.5), 
-## arm 3: Binom(0.55)
+## arm 2: Binom(0.49)
+## arm 3: Binom(0.5), 
+## arm 4: Binom(0.55)
 
-dgp <- c(mean = c(0.49, 0.5, 0.55))
+dgp <- c(mean = c(0.49, 0.49, 0.5, 0.55))
 
 # - Initialize priors.
 alpha <- beta <- 1
@@ -59,7 +60,8 @@ for(rep in 1:n_reps){
     if(i %in% seq(0, n_exp, 100))
       cat(i,'...')
     
-    if(i <= 100){ # assign treatment to first 100 observations uniformly, for a more stable algorithm
+    if(i <= 100){ # assign treatment to first 100 observations uniformly, for a 
+      # more stable algorithm
       
       probs_arr[i,rep,] <- mu_prob <- rep(1/n_arms, n_arms)
       
@@ -75,12 +77,14 @@ for(rep in 1:n_reps){
                                                                  no[arm] +
                                                                    beta)
       
-      # get overall posterior probabilities, based on the proportion of times each arm was best
+      # get overall posterior probabilities, based on the proportion of times 
+      # each arm was best
       mu_prob_overall <- prop.table(table(factor(
         c(apply(mu_posterior_samples, 1, order, decreasing = TRUE)[1:2,]), 
         levels = 1:n_arms)))
       
-      probs_arr[i,rep,] <- (1-mu_prob_overall*2)*0.1/n_arms + mu_prob_overall*(1-(n_arms-2)*(0.1/n_arms) )
+      probs_arr[i,rep,] <- (1-mu_prob_overall*2)*0.1/n_arms + 
+        mu_prob_overall*(1-(n_arms-2)*(0.1/n_arms) )
       
       # sample according to algorithm
       theta_hat <- sapply(1:n_arms, function(arm){
@@ -111,13 +115,19 @@ pw_mat <- do.call('cbind', lapply(1:n_reps,
                                   } ))
 
 
-# sample mean, cumulative estimates
+#* sample mean, cumulative estimates ----
 sm_cum <- apply(y_arr, c(2,3), function(x) {
   (cumsum(ifelse(is.na(x), 0, x)))/cumsum(!is.na(x))
 })
 
-# across simulation, how often do we get it correct?
-sm_correct <- rowMeans(apply(sm_cum, c(1,2), function(x) which.max(x)==which.max(dgp)))
+# across simulations, how often do we get it correct?
+sm_correct <- rowMeans(apply(sm_cum, c(1,2), 
+                             function(x) which.max(x)==which.max(dgp)))
+
+# across simulations, how often do we get the best OR second best arm?
+sm_correct_two <- rowMeans(apply(sm_cum, c(1,2), 
+                                 function(x) which.max(x) %in% 
+                                   order(dgp, decreasing = TRUE)[1:2]))
 
 # bias
 sm_cumb <- apply(sm_cum - array(rep(dgp, each = n_exp*n_reps),
@@ -128,13 +138,19 @@ sm_cumb <- apply(sm_cum - array(rep(dgp, each = n_exp*n_reps),
                  c(1,3), mean, na.rm = TRUE)
 
 
-# ht, cumulative estimates
+#* ht, cumulative estimates ----
 ht_cum <- apply(y_arr/probs_arr, c(2,3), function(x) {
   cumsum(ifelse(is.na(x), 0, x))/seq_along(x)
 })
 
-# across simulation, how often do we get it correct?
-ht_correct <- rowMeans(apply(ht_cum, c(1,2), function(x) which.max(x)==which.max(dgp)))
+# across simulations, how often do we get it correct?
+ht_correct <- rowMeans(apply(ht_cum, c(1,2), 
+                             function(x) which.max(x)==which.max(dgp)))
+
+# across simulations, how often do we get the best OR second best arm?
+ht_correct_two <- rowMeans(apply(ht_cum, c(1,2), 
+                                 function(x) which.max(x) %in% 
+                                   order(dgp, decreasing = TRUE)[1:2]))
 
 # bias
 ht_cumb <- apply(ht_cum - array(rep(dgp, each = n_exp*n_reps),
@@ -144,7 +160,7 @@ ht_cumb <- apply(ht_cum - array(rep(dgp, each = n_exp*n_reps),
                                                 paste0('arm_', 1:n_arms))), 
                  c(1,3), mean, na.rm = TRUE)
 
-# hajek, cumulative estimates
+#* hajek, cumulative estimates ----
 
 hj_cum <- sapply(1:n_arms, # applying over repetitions
                  function(x){
@@ -155,15 +171,22 @@ hj_cum <- sapply(1:n_arms, # applying over repetitions
                  }, 
                  simplify = 'array')
 
-# across simulation, how often do we get it correct?
-hj_correct <- rowMeans(apply(hj_cum, c(1,2), function(x) which.max(x)==which.max(dgp)))
+# across simulations, how often do we get it correct?
+hj_correct <- rowMeans(apply(hj_cum, c(1,2), 
+                             function(x) which.max(x)==which.max(dgp)))
+
+# across simulations, how often do we get the best OR second best arm?
+hj_correct_two <- rowMeans(apply(hj_cum, c(1,2), 
+                                 function(x) which.max(x) %in% 
+                                   order(dgp, decreasing = TRUE)[1:2]))
 
 # bias
 hj_cumb <- apply(hj_cum - array(rep(dgp, each = n_exp*n_reps),
-  dim = c(n_exp, n_reps, n_arms), 
-  dimnames = list(paste0('obs_', 1:n_exp), 
-                  paste0('rep_', 1:n_reps),
-                  paste0('arm_', 1:n_arms))), c(1,3), mean, na.rm = TRUE)
+                                dim = c(n_exp, n_reps, n_arms), 
+                                dimnames = list(paste0('obs_', 1:n_exp), 
+                                                paste0('rep_', 1:n_reps),
+                                                paste0('arm_', 1:n_arms))), 
+                 c(1,3), mean, na.rm = TRUE)
 
 # Plots ----
 # Plot mapping cumulative assignment
@@ -182,9 +205,11 @@ cum_assign_l <- lapply(seq(dim(assign_arr)[2]), function(x) {
 
 cum_assign_long <- do.call(rbind.data.frame, cum_assign_l)
 
-sidx <- which(cum_assign_long$rep %in% sample(1:n_reps, size = min(n_reps, 100)))
+sidx <- which(cum_assign_long$rep %in% sample(1:n_reps, 
+                                              size = min(n_reps, 100)))
 
-gg1 <- ggplot(cum_assign_long[sidx,], aes(x = n, y = arm, color = as.factor(p), stroke = as.factor(rep))) +
+gg1 <- ggplot(cum_assign_long[sidx,], aes(x = n, y = arm, color = as.factor(p), 
+                                          stroke = as.factor(rep))) +
   facet_grid(cols = vars(as.factor(p))) +
   geom_line(alpha = 0.2) +
   theme_bw() +
@@ -195,29 +220,58 @@ gg1 <- ggplot(cum_assign_long[sidx,], aes(x = n, y = arm, color = as.factor(p), 
   scale_colour_viridis_d(labels = as.character(dgp)) + 
   guides(colour = guide_legend(override.aes = list(alpha = 1)))
 
-ggsave(file = '../tables-figures/tt_cumulative.png', 
+ggsave(file = '../tables-figures/tt_cumulative4.png', 
        plot = gg1, 
        device = 'png',
        width = 8, height = 4)
 
 
 # Plot of proportion correct across estimators
-cmat <- data.frame(n = rep(1:n_exp, 3), correct_pct = c(sm_correct, ht_correct, hj_correct), 
-                   estimator = rep(c('Sample mean', 'Horvitz-Thompson', 'Hajek'), each = n_exp))
+cmat <- data.frame(n = rep(1:n_exp, 3), 
+                   correct_pct = c(sm_correct, ht_correct, hj_correct), 
+                   estimator = rep(c('Sample mean', 'Horvitz-Thompson', 'Hajek'), 
+                                   each = n_exp))
 
 
 gg2 <- ggplot(cmat, aes(x = n, y = correct_pct, color = as.factor(estimator))) +
   geom_line() +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
-  labs(title = 'Top-two Thompson, best arm selection', x = 'Time', 
-       y = 'Proportion Correct', 
-       color = 'Estimator') +
+  labs(#title = 'Top-two Thompson, best arm selection', 
+    x = 'Time', 
+    y = 'Proportion Correct', 
+    color = 'Estimator') +
   scale_colour_viridis_d() +
   coord_cartesian(ylim = c(0,1))
 
-ggsave(file = '../tables-figures/tt_correct.png', 
+ggsave(file = '../tables-figures/tt_correct4.png', 
        plot = gg2, 
+       device = 'png',
+       width = 8, height = 4)
+
+# Plot of proportion selected in top two across estimators
+cmat2 <- data.frame(n = rep(1:n_exp, 3), 
+                    correct_pct = c(sm_correct_two, ht_correct_two, 
+                                    hj_correct_two), 
+                    estimator = rep(c('Sample mean', 'Horvitz-Thompson', 
+                                      'Hajek'), 
+                                    each = n_exp))
+
+
+gg22 <- ggplot(cmat2, aes(x = n, y = correct_pct, 
+                          color = as.factor(estimator))) +
+  geom_line() +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+  labs(#title = 'Top-two Thompson, best arm selection', 
+    x = 'Time', 
+    y = 'Proportion selected in top two', 
+    color = 'Estimator') +
+  scale_colour_viridis_d() +
+  coord_cartesian(ylim = c(0,1))
+
+ggsave(file = '../tables-figures/tt_correct-top-two4.png', 
+       plot = gg22, 
        device = 'png',
        width = 8, height = 4)
 
@@ -225,11 +279,15 @@ ggsave(file = '../tables-figures/tt_correct.png',
 # Bias plot
 bias_l <- lapply(list(sm_cumb, ht_cumb, hj_cumb), function(x) {
   bdf <- reshape(as.data.frame(x), 
-          varying = list(1:n_arms), 
-          direction = 'long', timevar = 'p', idvar = 'n', sep = '_', v.names = 'bias')
+                 varying = list(1:n_arms), 
+                 direction = 'long', timevar = 'p', idvar = 'n', sep = '_', 
+                 v.names = 'bias')
 })
 
-bias_long <- cbind(estimator = rep(c('Sample mean', 'Horvitz-Thompson', 'Hajek'), each = 3*n_exp), do.call(rbind.data.frame, bias_l))
+bias_long <- cbind(estimator = rep(
+  c('Sample mean', 'Horvitz-Thompson', 'Hajek'), 
+  each = n_arms*n_exp), 
+  do.call(rbind.data.frame, bias_l))
 
 labelsp <- paste0('p = ', dgp)
 names(labelsp) <- 1:n_arms
@@ -241,14 +299,25 @@ gg3 <- ggplot(bias_long, aes(x = n, y = bias, color = estimator)) +
   theme_bw() + 
   coord_cartesian(ylim = c(-1,1)*0.025) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
-  labs(title = 'Top-two Thompson, bias', x = 'Time', 
-       y = 'Bias', 
-       color = 'Estimator') +
+  labs(#title = 'Top-two Thompson, bias', 
+    x = 'Time', 
+    y = 'Bias', 
+    color = 'Estimator') +
   scale_colour_viridis_d()
 
-ggsave(file = '../tables-figures/tt_bias.png', 
+ggsave(file = '../tables-figures/tt_bias4.png', 
        plot = gg3, 
        device = 'png',
-       width = 6, height = 4)
+       width = 6, height = 6)
 
-write.csv(cmat, file = '../tables-figures/best_arm_sims.csv')
+
+smat <- data.frame(n = rep(1:n_exp, 3), 
+                   correct_pct = c(sm_correct, ht_correct, hj_correct),
+                   top_two_pct = c(sm_correct_two, ht_correct_two, 
+                                   hj_correct_two),
+                   estimator = rep(c('Sample mean', 'Horvitz-Thompson', 
+                                     'Hajek'), 
+                                   each = n_exp))
+
+write.csv(smat, file = '../tables-figures/best_arm_sims4.csv', 
+          row.names = FALSE)
