@@ -125,9 +125,32 @@ for(cid in sort(unique(df$concern_id)) ){
     xlab('Observations') +
     ylab('Cumulative assignment') +
     ggtitle(paste0('Cumulative assignment under concern ', cid),
-            subtitle = concerns[cid])
+            subtitle = concerns[cid]) + 
+    coord_cartesian(ylim = c(0, ceiling(max(ddf$count)/100)*100))
   
   ggsave(filename = paste0('../tables-figures/cum_assign', cid, '.pdf'), 
+         plot = g, 
+         width = 6, height = 4)
+}
+
+# Static assignment
+for(cid in sort(unique(df$concern_id)) ){
+  ddf <- df[which(df$concern_id == cid),]
+  ddf$time <- 1:nrow(ddf)
+  ddf_alt <- ddf
+  ddf_alt$treatment_id <- rep(unique(ddf$treatment_id), ceiling(nrow(ddf)/length(unique(ddf$treatment_id))))[1:nrow(ddf)]
+  ddf_alt$count <- ave(rep(1,nrow(ddf_alt)), ddf_alt$treatment_id, FUN = cumsum)
+  
+  g <- ggplot(ddf_alt, aes(x = time, y = count, color = as.factor(treatment_id))) +
+    geom_line() + 
+    scale_color_discrete(name = 'Message id', labels = as_labeller(messages)) +
+    xlab('Observations') +
+    ylab('Cumulative assignment') +
+    ggtitle(paste0('Static cumulative assignment under concern ', cid),
+            subtitle = concerns[cid]) + 
+    coord_cartesian(ylim = c(0, ceiling(max(ddf$count)/100)*100))
+  
+  ggsave(filename = paste0('../tables-figures/cum_assign_static', cid, '.pdf'), 
          plot = g, 
          width = 6, height = 4)
 }
