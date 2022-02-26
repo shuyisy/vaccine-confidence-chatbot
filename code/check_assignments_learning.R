@@ -1,4 +1,5 @@
 library(tidyverse)
+library(viridisLite)
 
 # Read in data ----
 # heroku
@@ -413,13 +414,14 @@ for(cid in sort(unique(dfh$concern_id)) ){
   ddfh <- dfh[which(dfh$concern_id == cid),]
   ddfh$time <- 1:nrow(ddfh)
   g <- ggplot(ddfh, aes(x = time, y = count, color = as.factor(treatment_id))) +
-    geom_line() + 
-    scale_color_discrete(name = 'Message id', labels = as_labeller(messages)) +
+    geom_line() +
+    scale_colour_viridis_d(name = 'Message id', labels = as_labeller(messages)) + 
     xlab('Observations') +
     ylab('Cumulative assignment') +
     ggtitle(paste0('Cumulative assignment under concern ', cid),
             subtitle = concerns[cid]) + 
-    coord_cartesian(ylim = c(0, ceiling(max(ddfh$count)/100)*100))
+    coord_cartesian(ylim = c(0, ceiling(max(ddfh$count)/100)*100)) +
+    theme_bw()
   
   ggsave(filename = paste0('../tables-figures/cum_assign', cid, '.pdf'), 
          plot = g, 
@@ -436,12 +438,13 @@ for(cid in sort(unique(dfh$concern_id)) ){
   
   g <- ggplot(ddfh_alt, aes(x = time, y = count, color = as.factor(treatment_id))) +
     geom_line() + 
-    scale_color_discrete(name = 'Message id', labels = as_labeller(messages)) +
+    scale_colour_viridis_d(name = 'Message id', labels = as_labeller(messages)) + 
     xlab('Observations') +
     ylab('Cumulative assignment') +
     ggtitle(paste0('Static cumulative assignment under concern ', cid),
             subtitle = concerns[cid]) + 
-    coord_cartesian(ylim = c(0, ceiling(max(ddfh$count)/100)*100))
+    coord_cartesian(ylim = c(0, ceiling(max(ddfh$count)/100)*100)) +
+    theme_bw()
   
   ggsave(filename = paste0('../tables-figures/cum_assign_static', cid, '.pdf'), 
          plot = g, 
